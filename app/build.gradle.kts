@@ -87,16 +87,4 @@ dependencies {
     val nav_version = "2.9.3"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
-
-    val supabase_version = "3.0.2"
-    val ktor_version = "3.2.3"
-
-    implementation ("io.github.jan-tennert.supabase:postgrest-kt:$supabase_version")
-    implementation ("io.github.jan-tennert.supabase:storage-kt:$supabase_version")
-    implementation ("io.github.jan-tennert.supabase:auth-kt:$supabase_version")
-    implementation ("io.ktor:ktor-client-android:$ktor_version")
-    implementation ("io.ktor:ktor-client-core:$ktor_version")
-    implementation ("io.ktor:ktor-utils:$ktor_version")
-
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:1.3.2")
 }

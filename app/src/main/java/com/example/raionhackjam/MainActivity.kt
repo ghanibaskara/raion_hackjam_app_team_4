@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
         val chatViewModel = ViewModelProvider(this)[ChatViewModel::class.java]
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "onboarding_screen") {
+            NavHost(navController = navController, startDestination = "splash_screen") {
                 composable("splash_screen") {
                     SplashScreen(navController)
                 }

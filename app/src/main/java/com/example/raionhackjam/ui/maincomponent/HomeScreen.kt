@@ -26,32 +26,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.raionhackjam.geminiAPI.ChatViewModel
+import com.example.raionhackjam.ui.ChatPage
 import com.example.raionhackjam.ui.theme.base
+
+enum class BottomNavItem {
+    BERANDA, OBROLAN
+}
 
 @Composable
 fun HomeScreen() {
+    val navController = rememberNavController()
+    val chatViewModel: ChatViewModel = viewModel()
+    var selectedItem by remember { mutableStateOf(BottomNavItem.BERANDA) }
     Scaffold(
         bottomBar = { HomeBottomNavigation() }
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFFF5F5F5))
-                .padding(paddingValues),
-            contentPadding = PaddingValues(top = 160.dp)
+                .padding(paddingValues)
         ) {
-
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                HelpCard(modifier = Modifier.padding(horizontal = 16.dp))
-            }
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                UserProfileCard(modifier = Modifier.padding(horizontal = 16.dp))
-            }
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                UserProfileCard(modifier = Modifier.padding(horizontal = 16.dp))
+            when (selectedItem) {
+                BottomNavItem.BERANDA -> HomeScreen()
+                BottomNavItem.OBROLAN -> ChatPage(navController = navController, viewModel = chatViewModel)
             }
         }
         HeaderSection()
@@ -158,12 +160,6 @@ fun HelpCard(modifier: Modifier = Modifier) {
                         Text("Cari pekerjaan", color = Color.White)
                     }
                 }
-                // Ganti dengan gambar ilustrasi Anda
-                // Image(
-                //     painter = painterResource(id = ILLUSTRATION_IMAGE),
-                //     contentDescription = "Illustration",
-                //     modifier = Modifier.size(120.dp)
-                // )
                 Box(modifier = Modifier.size(120.dp).background(Color.Gray.copy(alpha = 0.5f))) // Placeholder
             }
         }
@@ -184,15 +180,6 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Ganti dengan gambar avatar Anda
-                // Image(
-                //     painter = painterResource(id = AVATAR_IMAGE),
-                //     contentDescription = "User Avatar",
-                //     modifier = Modifier
-                //         .size(48.dp)
-                //         .clip(CircleShape),
-                //     contentScale = ContentScale.Crop
-                // )
                 Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.LightGray)) // Placeholder
 
                 Spacer(modifier = Modifier.width(12.dp))

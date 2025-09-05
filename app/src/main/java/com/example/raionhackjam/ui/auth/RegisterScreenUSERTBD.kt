@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,12 +48,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.raionhackjam.R
-import com.example.raionhackjam.supabase.SupabaseAuthViewModel
-import com.example.raionhackjam.supabase.UserState
 import com.example.raionhackjam.ui.poppinsFontFamily
 import com.example.raionhackjam.ui.poppinsFontFamily
 import com.example.raionhackjam.ui.theme.base
@@ -69,19 +64,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun RegisterScreenUSERTBD(modifier: Modifier = Modifier, navController: NavController, viewModel: SupabaseAuthViewModel = viewModel()) {
-
-    val context = LocalContext.current
-    val userState by viewModel.userState
-
-    var currentUserState by remember { mutableStateOf("") }
-
-    LaunchedEffect(Unit) {
-        viewModel.isUserLoggedIn(
-            context
-        )
-    }
-
+fun RegisterScreenUSERTBD(modifier: Modifier = Modifier, navController: NavController) {
     Column (
         modifier = modifier
             .fillMaxSize()
@@ -575,12 +558,6 @@ fun RegisterScreenUSERTBD(modifier: Modifier = Modifier, navController: NavContr
                     //Daftar Button
                     OutlinedButton(
                         onClick = {
-                            viewModel.signUp(
-                                email,
-                                password,
-                                context
-                            )
-
                             navController.navigate("roles_screen"){
                                 popUpTo("register_screen") { inclusive = true }
                             }
@@ -600,25 +577,6 @@ fun RegisterScreenUSERTBD(modifier: Modifier = Modifier, navController: NavContr
                             fontSize = 16.sp,
                             color = Color.White,
                         )
-                    }
-
-                    when (userState) {
-                        is UserState.Loading -> {
-                        }
-
-                        is UserState.success -> {
-                            val message = (userState as UserState.success).message
-                            currentUserState = message
-                        }
-
-                        is UserState.Error -> {
-                            val message = (userState as UserState.Error).message
-                            currentUserState = message
-                        }
-                    }
-
-                    if (currentUserState.isNotEmpty()) {
-                        Text(text = currentUserState)
                     }
 
 //                    Spacer(modifier = Modifier
@@ -662,6 +620,5 @@ fun RegisterScreenUSERTBD(modifier: Modifier = Modifier, navController: NavContr
                 }
             }
         }
-
     }
 

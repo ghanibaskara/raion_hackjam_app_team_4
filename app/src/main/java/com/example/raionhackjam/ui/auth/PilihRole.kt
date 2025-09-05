@@ -92,7 +92,7 @@ fun PilihPeranScreen(navController: NavController) {
 
             // Tombol Selanjutnya
             Button(
-                onClick = { /* TODO: Aksi untuk tombol selanjutnya */ },
+                onClick = { navController.navigate("home_screen") },
                 modifier = Modifier
                     .weight(1f)
                     .height(50.dp),

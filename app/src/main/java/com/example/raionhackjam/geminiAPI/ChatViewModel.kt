@@ -172,22 +172,16 @@ class ChatViewModel : ViewModel(){
             if (response.text.toString() == "TRUE"){
 
 
-                // 1. Kirim prompt untuk ekstraksi keyword (Anda sudah lakukan ini)
                 val cari = chat.sendMessage(prompt)
 
-                // 2. Parse keywords menjadi List<String> (Anda sudah lakukan ini)
                 val keywords = parseKeywords(cari.text.toString())
                 Log.i("Keywords detected :", keywords.toString())
 
-                // 3. Cari freelancer yang cocok menggunakan fungsi baru kita
                 val matchingProfiles = findMatchingFreelancers(keywords)
                 Log.i("Matching Profiles:", matchingProfiles.joinToString { it.namaPanggilan })
 
-                // 4. Format hasilnya menjadi sebuah string untuk ditampilkan di chat
                 val formattedResponse = formatProfilesForChat(matchingProfiles)
 
-                // 5. Tampilkan hasilnya ke pengguna
-                // messageList.add(MessageModel(formattedResponse, "model")) // <-- Nonaktifkan jika tidak perlu di history
                 visibleMessageList.add(MessageModel(formattedResponse, "model"))
 
 
@@ -206,24 +200,23 @@ class ChatViewModel : ViewModel(){
 
 fun parseKeywords(raw: String): List<String> {
     return raw
-        .split(Regex("[\\r\\n]+"))                   // split on newlines
-        .map { it.trim() }                           // trim whitespace
-        .map { it.trim('"', '\'', '‘', '’') }        // remove surrounding quotes
+        .split(Regex("[\\r\\n]+"))
+        .map { it.trim() }
+        .map { it.trim('"', '\'', '‘', '’') }
         .map {
             it.replace(
                 Regex("^[\\u2022\\-\\*\\>\\s]+|[\\u2022\\-\\*\\>\\s]+$"),
                 ""
             )
-        } // strip bullets/prefixes
-        .map { it.replace(Regex("\\s{2,}"), " ") }   // collapse repeated spaces
-        .filter { it.isNotBlank() }                  // drop empty lines
-        .filter { !it.equals("dst", true) && it != "..." } // remove common noise tokens
+        }
+        .map { it.replace(Regex("\\s{2,}"), " ") }
+        .filter { it.isNotBlank() }
+        .filter { !it.equals("dst", true) && it != "..." }
         .map { it }
 }
 
 private fun findMatchingFreelancers(Keywords: List<String>): List<DummyData> {
     return allFreelancers.filter { freelancer ->
-        // Memeriksa apakah ada keyword dari Gemini yang terkandung dalam deskripsi freelancer
         Keywords.any { keyword ->
             freelancer.deskripsi.lowercase().contains(keyword.lowercase())
         }
