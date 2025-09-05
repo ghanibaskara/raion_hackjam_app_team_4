@@ -1,10 +1,5 @@
 package com.example.raionhackjam.ui.maincomponent
 
-import com.example.raionhackjam.ui.theme.RAIONHACKJAMTheme
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,13 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.raionhackjam.geminiAPI.ChatViewModel
@@ -34,7 +26,7 @@ import com.example.raionhackjam.ui.ChatPage
 import com.example.raionhackjam.ui.theme.base
 
 enum class BottomNavItem {
-    BERANDA, OBROLAN
+    BERANDA, OBROLAN, RIWAYAT, PROFIL
 }
 
 @Composable
@@ -42,8 +34,16 @@ fun HomeScreen() {
     val navController = rememberNavController()
     val chatViewModel: ChatViewModel = viewModel()
     var selectedItem by remember { mutableStateOf(BottomNavItem.BERANDA) }
+
     Scaffold(
-        bottomBar = { HomeBottomNavigation() }
+        bottomBar = {
+            HomeBottomNavigation(
+                selectedItem = selectedItem,
+                onItemSelected = { item ->
+                    selectedItem = item
+                }
+            )
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -52,11 +52,54 @@ fun HomeScreen() {
                 .padding(paddingValues)
         ) {
             when (selectedItem) {
-                BottomNavItem.BERANDA -> HomeScreen()
+                BottomNavItem.BERANDA -> BerandaScreen()
                 BottomNavItem.OBROLAN -> ChatPage(navController = navController, viewModel = chatViewModel)
+                BottomNavItem.RIWAYAT -> RiwayatScreen()
+                BottomNavItem.PROFIL -> ProfilScreen()
             }
         }
-        HeaderSection()
+    }
+}
+
+@Composable
+fun BerandaScreen() {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 160.dp)
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(64.dp))
+            HelpCard(modifier = Modifier.padding(horizontal = 16.dp))
+        }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            UserProfileCard(modifier = Modifier.padding(horizontal = 16.dp))
+        }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            UserProfileCard(modifier = Modifier.padding(horizontal = 16.dp))
+        }
+    }
+    HeaderSection()
+}
+
+@Composable
+fun RiwayatScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Halaman Riwayat", fontSize = 20.sp)
+    }
+}
+
+@Composable
+fun ProfilScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Halaman Profil", fontSize = 20.sp)
     }
 }
 
@@ -160,7 +203,7 @@ fun HelpCard(modifier: Modifier = Modifier) {
                         Text("Cari pekerjaan", color = Color.White)
                     }
                 }
-                Box(modifier = Modifier.size(120.dp).background(Color.Gray.copy(alpha = 0.5f))) // Placeholder
+                Box(modifier = Modifier.size(120.dp).background(Color.Gray.copy(alpha = 0.5f)))
             }
         }
     }
@@ -175,13 +218,11 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Profile Header
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.LightGray)) // Placeholder
-
+                Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.LightGray))
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text("Dimas", fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -195,10 +236,7 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text("4.9", fontWeight = FontWeight.Bold)
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
-            // Location and Badge
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.LocationOn, contentDescription = "Location", tint = Color.Gray, modifier = Modifier.size(16.dp))
                 Spacer(modifier = Modifier.width(4.dp))
@@ -216,20 +254,14 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Description
             Text(
                 "Seorang apaan yak ceritanya, aaa iii uuu eee ooo, seorang dua orang tiga orang satu dua tiga empat lima enak tujuh delapan",
                 fontSize = 14.sp,
                 color = Color.DarkGray,
                 lineHeight = 20.sp
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Tags
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 TagChip(icon = Icons.AutoMirrored.Filled.Send, text = "Kurir")
                 TagChip(icon = Icons.Default.Star, text = "Cepat")
@@ -240,7 +272,7 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TagChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
+fun TagChip(icon: ImageVector, text: String) {
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = Color(0xFFE8EAF6),
@@ -257,26 +289,27 @@ fun TagChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String)
     }
 }
 
-
 @Composable
-fun HomeBottomNavigation() {
-    var selectedItem by remember { mutableStateOf(0) }
+fun HomeBottomNavigation(
+    selectedItem: BottomNavItem,
+    onItemSelected: (BottomNavItem) -> Unit
+) {
     val items = listOf(
-        "Beranda" to Icons.Default.Home,
-        "Obrolan" to Icons.Default.MailOutline,
-        "Riwayat" to Icons.Default.DateRange,
-        "Profil" to Icons.Default.Person
+        BottomNavItem.BERANDA to Icons.Default.Home,
+        BottomNavItem.OBROLAN to Icons.Default.MailOutline,
+        BottomNavItem.RIWAYAT to Icons.Default.DateRange,
+        BottomNavItem.PROFIL to Icons.Default.Person
     )
 
     NavigationBar(
         containerColor = Color.White
     ) {
-        items.forEachIndexed { index, item ->
+        items.forEach { (item, icon) ->
             NavigationBarItem(
-                icon = { Icon(item.second, contentDescription = item.first) },
-                label = { Text(item.first) },
-                selected = selectedItem == index,
-                onClick = { selectedItem = index },
+                icon = { Icon(icon, contentDescription = item.name) },
+                label = { Text(item.name) },
+                selected = selectedItem == item,
+                onClick = { onItemSelected(item) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color(0xFF0D285B),
                     selectedTextColor = Color(0xFF0D285B),

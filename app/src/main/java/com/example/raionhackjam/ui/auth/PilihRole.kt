@@ -21,7 +21,6 @@ import androidx.navigation.NavController
 import com.example.raionhackjam.R
 import com.example.raionhackjam.ui.poppinsFontFamily
 
-// Enum untuk merepresentasikan pilihan peran agar kode lebih aman dan bersih
 enum class UserRole {
     JURAGAN,
     KERJOMAN
@@ -29,7 +28,6 @@ enum class UserRole {
 
 @Composable
 fun PilihPeranScreen(navController: NavController) {
-    // State untuk menyimpan peran yang sedang dipilih. Awalnya null (tidak ada yang dipilih).
     var selectedRole by remember { mutableStateOf<UserRole?>(null) }
 
     Column(
@@ -47,9 +45,8 @@ fun PilihPeranScreen(navController: NavController) {
             modifier = Modifier.padding(vertical = 56.dp)
         )
 
-        // Kartu Pilihan "Juragan"
         RoleCard(
-            imageRes = R.drawable.juraganicon, // ❗ Ganti dengan gambar Anda
+            imageRes = R.drawable.juraganicon,
             title = "Juragan",
             subtitle = "Saya membutuhkan tenaga kerja",
             isSelected = selectedRole == UserRole.JURAGAN,
@@ -58,24 +55,20 @@ fun PilihPeranScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Kartu Pilihan "KerjoMan"
         RoleCard(
-            imageRes = R.drawable.kerjoman, // ❗ Ganti dengan gambar Anda
+            imageRes = R.drawable.kerjoman,
             title = "KerjoMan",
             subtitle = "Saya membutuhkan pekerjaan",
             isSelected = selectedRole == UserRole.KERJOMAN,
             onClick = { selectedRole = UserRole.KERJOMAN }
         )
 
-        // Spacer ini akan mendorong tombol ke bagian bawah layar
         Spacer(modifier = Modifier.weight(1f))
 
-        // Baris untuk Tombol Bawah
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Tombol Kembali
             OutlinedButton(
                 onClick = { navController.navigate("register_screen"){
                     popUpTo("roles_screen"){ inclusive = true }
@@ -90,7 +83,6 @@ fun PilihPeranScreen(navController: NavController) {
                 Text(text = "Kembali", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
-            // Tombol Selanjutnya
             Button(
                 onClick = { navController.navigate("home_screen") },
                 modifier = Modifier
@@ -98,7 +90,7 @@ fun PilihPeranScreen(navController: NavController) {
                     .height(50.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A3A6A)),
-                // Tombol akan nonaktif jika tidak ada peran yang dipilih
+
                 enabled = selectedRole != null
             ) {
                 Text(text = "Selanjutnya", fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -118,8 +110,6 @@ fun RoleCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // PERUBAHAN 1: Ganti warna default (else) menjadi biru.
-    // Warna saat terpilih bisa tetap terang atau diubah sesuai selera.
     val cardColor = if (isSelected) Color(0xFFE0E8FF) else Color(0xFF4A729F)
     val borderColor = if (isSelected) Color(0xFF2A3A6A) else Color.Transparent
     val textColor = if (isSelected) Color.Black else Color.White
@@ -153,14 +143,12 @@ fun RoleCard(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    // PERUBAHAN 2: Ubah warna teks menjadi putih
                     Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
-                    Text(text = subtitle, fontSize = 14.sp, color = textColor) // Sedikit transparan
+                    Text(text = subtitle, fontSize = 14.sp, color = textColor)
                 }
                 RadioButton(
                     selected = isSelected,
                     onClick = onClick,
-                    // PERUBAHAN 3: Ubah warna RadioButton agar terlihat di background biru
                     colors = RadioButtonDefaults.colors(
                         selectedColor = Color.White,
                         unselectedColor = Color.White.copy(alpha = 0.8f)
